@@ -1,0 +1,6 @@
+# Project documentation keeps its own hand-wrapped Markdown style.
+/*.md
+/docs/
+package-lock.json
+# An expression for playwright-cli; Prettier's trailing semicolon would break it.
+/tests/browser-check.js

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Run every contribution check: formatting, Astro type check, build, and tests"
+set -euo pipefail
+npm run check

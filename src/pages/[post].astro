@@ -1,0 +1,40 @@
+---
+import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import Site from "../layouts/Site.astro";
+import Post from "../components/Post.astro";
+export async function getStaticPaths() {
+  const posts = (await getCollection("news")).sort(
+    (a, b) => +a.data.date - +b.data.date,
+  );
+  return posts.map((post, index) => ({
+    params: { post: post.id },
+    props: { post, previous: posts[index - 1], next: posts[index + 1] },
+  }));
+}
+interface Props {
+  post: CollectionEntry<"news">;
+  previous?: CollectionEntry<"news">;
+  next?: CollectionEntry<"news">;
+}
+const { post, previous, next } = Astro.props;
+const { labels } = (await getEntry("shared", "site"))!.data;
+---
+
+<Site
+  title={post.data.title}
+  description={`${post.data.title} – News aus dem Badmintonclub Menzingen.`}
+>
+  <Post post={post} />
+  <nav class="post-nav" aria-label={labels.newsNav}>
+    {previous && (
+      <a rel="prev" href={`/${previous.id}/`}>
+        ← {previous.data.title}
+      </a>
+    )}
+    {next && (
+      <a rel="next" href={`/${next.id}/`}>
+        {next.data.title} →
+      </a>
+    )}
+  </nav>
+</Site>

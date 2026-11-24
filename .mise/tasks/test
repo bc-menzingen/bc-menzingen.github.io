@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Test the repository and the built site in dist/"
+set -euo pipefail
+# Run `mise run build` first.
+npm test

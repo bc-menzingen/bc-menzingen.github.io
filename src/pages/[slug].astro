@@ -1,0 +1,24 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Site from "../layouts/Site.astro";
+import ContactReveal from "../components/ContactReveal.astro";
+export async function getStaticPaths() {
+  const ownRoute = ["startseite", "news", "404"];
+  return (await getCollection("pages", ({ id }) => !ownRoute.includes(id))).map(
+    (page) => ({ params: { slug: page.id }, props: { page } }),
+  );
+}
+interface Props {
+  page: CollectionEntry<"pages">;
+}
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+
+<Site {...page.data}>
+  <h1 class="entry-title">{page.data.title}</h1>
+  <div class="prose">
+    <Content />
+    {page.id === "kontakt" && <ContactReveal />}
+  </div>
+</Site>

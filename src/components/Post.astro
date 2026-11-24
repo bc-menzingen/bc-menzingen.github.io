@@ -1,0 +1,28 @@
+---
+import { getEntry, render, type CollectionEntry } from "astro:content";
+interface Props {
+  post: CollectionEntry<"news">;
+  link?: boolean;
+}
+const { post, link = false } = Astro.props;
+const { labels } = (await getEntry("shared", "site"))!.data;
+const { Content } = await render(post);
+const date = post.data.date.toLocaleDateString("de-CH", {
+  dateStyle: "long",
+  timeZone: "Europe/Zurich",
+});
+const Heading = link ? "h2" : "h1";
+---
+
+<article>
+  <Heading class="entry-title">
+    {link ? <a href={`/${post.id}/`}>{post.data.title}</a> : post.data.title}
+  </Heading>
+  <p class="entry-meta">
+    {labels.published}{" "}
+    <time datetime={post.data.date.toISOString()}>{date}</time>
+  </p>
+  <div class="prose">
+    <Content />
+  </div>
+</article>

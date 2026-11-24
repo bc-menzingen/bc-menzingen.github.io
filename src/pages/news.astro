@@ -1,0 +1,16 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Site from "../layouts/Site.astro";
+import Post from "../components/Post.astro";
+const page = (await getEntry("pages", "news"))!;
+const posts = (await getCollection("news")).sort(
+  (a, b) => +b.data.date - +a.data.date,
+);
+---
+
+<Site {...page.data}>
+  <h1 class="sr-only">{page.data.title}</h1>
+  {posts.map((post) => (
+    <Post post={post} link />
+  ))}
+</Site>

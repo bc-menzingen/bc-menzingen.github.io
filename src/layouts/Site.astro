@@ -1,0 +1,142 @@
+---
+import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
+import "@fontsource/oswald/400.css";
+import "../styles/global.css";
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+const { title, description, noindex = false } = Astro.props;
+const site = (await getEntry("shared", "site"))!.data;
+const { training, welcome, labels } = site;
+const path = Astro.url.pathname;
+const canonical = new URL(path, Astro.site);
+const pageTitle = path === "/" ? site.title : `${title} – ${site.title}`;
+const current = (href: string) => (path === href ? "page" : undefined);
+---
+
+<!doctype html>
+<html lang="de-CH">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      {labels.skip}
+    </a>
+    <div id="wrap">
+      <header>
+        <a class="logo" href="/">
+          <Image src={site.logo} alt={site.title} width={890} loading="eager" />
+        </a>
+        <nav aria-label={labels.nav}>
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-controls="menu"
+            aria-expanded="false"
+            hidden
+          >
+            {labels.menu}
+          </button>
+          <ul id="menu">
+            {site.nav.map(({ label, href, children }) => (
+              <li
+                class:list={{
+                  active:
+                    path === href ||
+                    children.some((child) => child.href === path),
+                }}
+              >
+                <a href={href} aria-current={current(href)}>
+                  {label}
+                </a>
+                {children.length > 0 && (
+                  <ul>
+                    {children.map((child) => (
+                      <li>
+                        <a href={child.href} aria-current={current(child.href)}>
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+      <div class="columns">
+        <main id="main" tabindex="-1">
+          <slot />
+        </main>
+        <aside aria-labelledby="training">
+          <h2 id="training">{training.title}</h2>
+          <p>
+            {training.times.map((time) => (
+              <Fragment>
+                {time}
+                <br />
+              </Fragment>
+            ))}
+          </p>
+          <p>{training.place}</p>
+        </aside>
+      </div>
+      <footer>
+        <div class="widgets">
+          <section>
+            <h2>{training.title}</h2>
+            <p>
+              {training.times.map((time) => (
+                <Fragment>
+                  {time}
+                  <br />
+                </Fragment>
+              ))}
+            </p>
+            <p>{training.address}</p>
+          </section>
+          <section>
+            <h2>{welcome.title}</h2>
+            <p>{welcome.text}</p>
+          </section>
+          <section>
+            <h2>{site.sponsorsTitle}</h2>
+            <div class="sponsors">
+              {site.sponsors.map(({ name, image, href }) => {
+                const logo = <Image src={image} alt={name} width={150} />;
+                return href ? <a href={href}>{logo}</a> : logo;
+              })}
+            </div>
+          </section>
+        </div>
+        <p class="site-info">© {site.title}</p>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle")!;
+  toggle.hidden = false; // Without JavaScript the menu simply stays open.
+  toggle.addEventListener("click", () => {
+    toggle.setAttribute(
+      "aria-expanded",
+      String(toggle.getAttribute("aria-expanded") !== "true"),
+    );
+  });
+</script>

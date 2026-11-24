@@ -1,0 +1,52 @@
+# Checks every pull request and publishes every push to main on GitHub Pages.
+# Pages must use "GitHub Actions" as its source in the repository settings.
+# See CONTRIBUTING.md.
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      # Optional; unset secrets arrive as empty strings.
+      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+      CONTACT_PHONE: ${{ secrets.CONTACT_PHONE }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Installs Node.js as pinned in .mise/config.toml.
+      - uses: jdx/mise-action@d5574b52816a478f9d4e6529a3f6ff17a8a36785 # v5.2.8
+      - name: Install dependencies
+        run: mise run install
+      - name: Formatting, type check, build, and tests
+        run: mise run check
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

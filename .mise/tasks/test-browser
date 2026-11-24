@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Check the built site in a browser (needs playwright-cli and a running preview)"
+set -euo pipefail
+# Run `mise run build` and `mise run preview` first. Extra arguments go to `playwright-cli open`.
+playwright-cli -s=bcm open http://127.0.0.1:4321/ "$@"
+trap 'playwright-cli -s=bcm close' EXIT
+playwright-cli -s=bcm run-code "$(cat tests/browser-check.js)"
