@@ -1,68 +1,126 @@
 ---
-import { getEntry } from 'astro:content';
-import { CONTACT_EMAIL, CONTACT_PHONE } from 'astro:env/server';
-import { obfuscate } from 'altcha-lib/obfuscation';
-const { contact } = (await getEntry('shared', 'site'))!.data;
+import { getEntry } from "astro:content";
+import { CONTACT_EMAIL, CONTACT_PHONE } from "astro:env/server";
+import { obfuscate } from "altcha-lib/obfuscation";
+const { contact } = (await getEntry("shared", "site"))!.data;
 const details = { email: CONTACT_EMAIL, phone: CONTACT_PHONE };
 const available = Boolean(details.email || details.phone);
 // Encrypted with a key the browser has to find by proof of work, about a second on a desktop.
-const sealed = available && await obfuscate(JSON.stringify(details), { cost: 40000, counterMin: 100, counterMax: 200 });
+const sealed =
+  available &&
+  (await obfuscate(JSON.stringify(details), {
+    cost: 40000,
+    counterMin: 100,
+    counterMax: 200,
+  }));
 ---
-{available ? <Fragment>
-  <p class="contact-links">
-    {details.email && <a href="#email">{contact.showEmail}</a>}
-    {details.phone && <a href="#telefon">{contact.showPhone}</a>}
-  </p>
-  <noscript><p>{contact.noscript}</p></noscript>
-  <dialog id="contact-captcha" aria-labelledby="contact-captcha-title" data-contact={sealed}>
-    <h2 id="contact-captcha-title">{contact.title}</h2>
-    <p>{contact.hint}</p>
-    <p class="captcha-status" role="status" data-checking={contact.checking} data-error={contact.error}></p>
-    <div class="captcha-actions">
-      <button class="captcha-close" type="button">{contact.close}</button>
-      <button class="captcha-confirm" type="button">{contact.confirm}</button>
-    </div>
-  </dialog>
-</Fragment> : <p>{contact.noneAvailable}</p>}
+
+{available ? (
+  <Fragment>
+    <p class="contact-links">
+      {details.email && <a href="#email">{contact.showEmail}</a>}
+      {details.phone && <a href="#telefon">{contact.showPhone}</a>}
+    </p>
+    <noscript>
+      <p>{contact.noscript}</p>
+    </noscript>
+    <dialog
+      id="contact-captcha"
+      aria-labelledby="contact-captcha-title"
+      data-contact={sealed}
+    >
+      <h2 id="contact-captcha-title">{contact.title}</h2>
+      <p>{contact.hint}</p>
+      <p
+        class="captcha-status"
+        role="status"
+        data-checking={contact.checking}
+        data-error={contact.error}
+      ></p>
+      <div class="captcha-actions">
+        <button class="captcha-close" type="button">
+          {contact.close}
+        </button>
+        <button class="captcha-confirm" type="button">
+          {contact.confirm}
+        </button>
+      </div>
+    </dialog>
+  </Fragment>
+) : (
+  <p>{contact.noneAvailable}</p>
+)}
 
 <script>
   type Contact = { email?: string; phone?: string };
 
-  const fromHex = (hex: string) => Uint8Array.from(hex.match(/../g)!, byte => parseInt(byte, 16));
+  const fromHex = (hex: string) =>
+    Uint8Array.from(hex.match(/../g)!, (byte) => parseInt(byte, 16));
 
   // Counterpart of altcha-lib's obfuscate(); its own deobfuscate() is not usable in browsers.
-  async function unseal(sealed: string, controller: AbortController): Promise<Contact> {
+  async function unseal(
+    sealed: string,
+    controller: AbortController,
+  ): Promise<Contact> {
     const [{ solveChallenge }, { deriveKey }] = await Promise.all([
-      import('altcha-lib'), import('altcha-lib/algorithms/web/pbkdf2'),
+      import("altcha-lib"),
+      import("altcha-lib/algorithms/web/pbkdf2"),
     ]);
     const { parameters, cipher } = JSON.parse(atob(sealed));
-    const solution = await solveChallenge({ challenge: { parameters }, controller, deriveKey });
-    if (!solution) throw new Error('Captcha not solved');
-    const key = await crypto.subtle.importKey('raw', fromHex(solution.derivedKey), 'AES-GCM', false, ['decrypt']);
-    const data = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromHex(cipher.iv) }, key, fromHex(cipher.data));
+    const solution = await solveChallenge({
+      challenge: { parameters },
+      controller,
+      deriveKey,
+    });
+    if (!solution) throw new Error("Captcha not solved");
+    const key = await crypto.subtle.importKey(
+      "raw",
+      fromHex(solution.derivedKey),
+      "AES-GCM",
+      false,
+      ["decrypt"],
+    );
+    const data = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: fromHex(cipher.iv) },
+      key,
+      fromHex(cipher.data),
+    );
     return JSON.parse(new TextDecoder().decode(data));
   }
 
   function setUp(dialog: HTMLDialogElement) {
-    const status = dialog.querySelector<HTMLElement>('.captcha-status')!;
-    const confirm = dialog.querySelector<HTMLButtonElement>('.captcha-confirm')!;
-    const phoneLinks = [...document.querySelectorAll<HTMLAnchorElement>('a[href="#telefon"]')];
-    const emailLinks = [...document.querySelectorAll<HTMLAnchorElement>('a[href="#email"]')];
+    const status = dialog.querySelector<HTMLElement>(".captcha-status")!;
+    const confirm =
+      dialog.querySelector<HTMLButtonElement>(".captcha-confirm")!;
+    const phoneLinks = [
+      ...document.querySelectorAll<HTMLAnchorElement>('a[href="#telefon"]'),
+    ];
+    const emailLinks = [
+      ...document.querySelectorAll<HTMLAnchorElement>('a[href="#email"]'),
+    ];
     const links = [...phoneLinks, ...emailLinks];
     let controller: AbortController | undefined;
 
     function reveal({ email, phone }: Contact) {
-      if (phone) for (const link of phoneLinks) { link.href = `tel:${phone.replace(/\s/g, '')}`; link.textContent = phone; }
-      if (email) for (const link of emailLinks) { link.href = `mailto:${email}`; link.textContent = email; }
+      if (phone)
+        for (const link of phoneLinks) {
+          link.href = `tel:${phone.replace(/\s/g, "")}`;
+          link.textContent = phone;
+        }
+      if (email)
+        for (const link of emailLinks) {
+          link.href = `mailto:${email}`;
+          link.textContent = email;
+        }
       for (const link of links) {
-        link.removeEventListener('click', open);
-        link.removeAttribute('aria-haspopup');
+        link.removeEventListener("click", open);
+        link.removeAttribute("aria-haspopup");
       }
       dialog.close(); // Returns focus to the activated link, which now holds the details.
     }
 
     async function check() {
-      const current = controller = new AbortController();
+      const current = (controller = new AbortController());
       confirm.disabled = true;
       status.textContent = status.dataset.checking!;
       try {
@@ -77,21 +135,23 @@ const sealed = available && await obfuscate(JSON.stringify(details), { cost: 400
 
     function open(event: Event) {
       event.preventDefault();
-      status.textContent = '';
+      status.textContent = "";
       confirm.disabled = false;
       dialog.showModal();
       confirm.focus();
     }
 
     for (const link of links) {
-      link.addEventListener('click', open);
-      link.setAttribute('aria-haspopup', 'dialog');
+      link.addEventListener("click", open);
+      link.setAttribute("aria-haspopup", "dialog");
     }
-    confirm.addEventListener('click', check);
-    dialog.querySelector('.captcha-close')!.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('close', () => controller?.abort());
+    confirm.addEventListener("click", check);
+    dialog
+      .querySelector(".captcha-close")!
+      .addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", () => controller?.abort());
   }
 
-  const dialog = document.querySelector<HTMLDialogElement>('#contact-captcha');
+  const dialog = document.querySelector<HTMLDialogElement>("#contact-captcha");
   if (dialog) setUp(dialog);
 </script>

@@ -1,10 +1,13 @@
 ---
-import { getEntry, render } from 'astro:content';
-import Site from '../layouts/Site.astro';
-const page = (await getEntry('pages', 'startseite'))!;
+import { getEntry, render } from "astro:content";
+import Site from "../layouts/Site.astro";
+const page = (await getEntry("pages", "startseite"))!;
 const { Content } = await render(page);
 ---
+
 <Site {...page.data}>
   <h1 class="entry-title">{page.data.title}</h1>
-  <div class="prose home"><Content /></div>
+  <div class="prose home">
+    <Content />
+  </div>
 </Site>

@@ -20,8 +20,15 @@ welcome:
   text: Das Alter spielt bei uns keine Rolle. Alle Sportbegeisterten sind bei uns willkommen. Schau einfach mal bei einem Training vorbei.
 sponsorsTitle: Sponsoren
 sponsors:
-  - { name: Garage Hans Christen GmbH, image: ../../assets/garage_christen.png, href: "https://garagechristen.ch/" }
-  - { name: "Kevin Horat, Partner für Web & Design", image: ../../assets/logo_kevin_horat.png }
+  - {
+      name: Garage Hans Christen GmbH,
+      image: ../../assets/garage_christen.png,
+      href: "https://garagechristen.ch/",
+    }
+  - {
+      name: "Kevin Horat, Partner für Web & Design",
+      image: ../../assets/logo_kevin_horat.png,
+    }
 labels:
   skip: Zum Inhalt springen
   menu: Menü
