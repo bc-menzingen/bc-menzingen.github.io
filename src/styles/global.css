@@ -1,0 +1,77 @@
+/* Colours and geometry follow the Sporty theme settings of the original WordPress site. */
+:root { --blue: #052289; --bg: #3f3f3f; --text: #555; --display: 'Oswald', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+html { scrollbar-gutter: stable; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.8 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--blue); }
+:focus-visible { outline: 3px solid #f5a623; outline-offset: 2px; }
+main:focus { outline: none; }
+.skip-link { position: absolute; left: 10px; top: -100px; z-index: 3; padding: 8px 16px; background: #fff; }
+.skip-link:focus { top: 10px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+#wrap { max-width: 1200px; margin: 10px auto 40px; border-top: 8px solid var(--blue); background: #fff; box-shadow: 0 4px 4px #0009; }
+.logo { display: block; padding: 22px 6px 14px; }
+
+nav[aria-label='Hauptnavigation'] { border-top: 13px solid #000; background: #222; font-family: var(--display); text-transform: uppercase; }
+.menu-toggle { width: 100%; padding: 10px; border: 0; background: none; color: #fff; font: inherit; text-transform: inherit; cursor: pointer; }
+#menu, #menu ul { margin: 0; padding: 0; list-style: none; }
+#menu a { display: block; padding: 10px 20px; color: #fff; font-size: 15px; line-height: 22px; text-decoration: none; }
+#menu ul a { padding-left: 40px; background: #333; text-transform: none; }
+#menu a:hover, #menu a[aria-current] { background: var(--blue); }
+@media (max-width: 799px) {
+  .menu-toggle[aria-expanded='false']:not([hidden]) + #menu { display: none; }
+  #menu li + li, #menu ul { border-top: 1px solid #444; }
+}
+@media (min-width: 800px) {
+  .menu-toggle { display: none; }
+  #menu { display: flex; padding-left: 12px; }
+  #menu > li { position: relative; display: flex; }
+  #menu > li.active > a { background: var(--blue); }
+  #menu ul a { padding-left: 20px; }
+}
+/* With a mouse the submenu drops down; touch screens show it in line, as there is no hover. */
+@media (min-width: 800px) and (hover: hover) {
+  #menu ul { position: absolute; top: 100%; left: 0; z-index: 2; width: 230px; opacity: 0; pointer-events: none; }
+  #menu li:hover > ul, #menu li:focus-within > ul { opacity: 1; pointer-events: auto; }
+}
+
+.columns { display: grid; gap: 30px; padding: 10px; }
+main { min-width: 0; overflow-wrap: break-word; }
+.entry-title { margin: 0 0 25px; padding: 8px 6px; border-bottom: 6px solid #ccc; background: #f7f7f7; color: #000; font: 400 18px/1.7 var(--display); text-transform: uppercase; word-spacing: 4px; }
+.entry-title a { color: inherit; text-decoration: none; }
+.entry-title a:hover { color: var(--blue); }
+.entry-meta { margin: -15px 6px 15px; font-size: 14px; }
+.prose { padding: 0 6px 20px; }
+.prose p { margin: 0 0 1.5em; }
+.home h2 { margin: 0 0 12px; font-size: clamp(24px, 3vw, 32px); line-height: 1.3; }
+.home img { width: 100%; }
+.post-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 30px; padding: 15px 6px; border-top: 1px solid #ddd; }
+.post-nav a { text-decoration: none; }
+.post-nav a:hover { text-decoration: underline; }
+.post-nav [rel='next'] { margin-left: auto; text-align: right; }
+aside { align-self: start; padding: 20px 14px 10px; border-radius: 6px; background: #f7f7f7; font-size: 14px; }
+aside h2 { margin: 0 0 12px; border-bottom: 7px solid var(--blue); color: #000; font: 400 15px/2 var(--display); text-transform: uppercase; }
+aside p, footer p { margin: 0 6px 1.2em; }
+@media (min-width: 800px) { .columns { grid-template-columns: minmax(0, 1fr) 292px; gap: 35px; } }
+
+footer { border-top: 4px solid var(--blue); background: #333; color: #ccc; font-size: 14px; }
+.widgets { display: grid; gap: 20px 35px; padding: 35px 14px 25px; }
+.widgets h2 { margin: 0 0 12px; border-bottom: 2px solid #666; font: 400 16px/2.2 var(--display); text-transform: uppercase; }
+.sponsors { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 20px; padding: 6px; }
+.sponsors img { width: 150px; }
+footer .site-info { margin: 0; padding: 22px; background: #222; text-align: center; }
+@media (min-width: 800px) { .widgets { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.contact-links { display: flex; flex-direction: column; align-items: start; gap: 4px; }
+body:has(dialog[open]) { overflow: hidden; }
+#contact-captcha { width: min(400px, calc(100vw - 20px)); padding: 25px; border: 0; border-top: 8px solid var(--blue); background: #fff; color: var(--text); box-shadow: 0 4px 20px #0009; }
+#contact-captcha::backdrop { background: #000a; }
+#contact-captcha h2 { margin: 0 0 12px; color: #000; font: 400 18px/1.5 var(--display); text-transform: uppercase; }
+#contact-captcha p { margin: 0 0 15px; line-height: 1.6; }
+#contact-captcha .captcha-status { min-height: 1.6em; }
+#contact-captcha .captcha-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+#contact-captcha button { padding: 8px 16px; border: 1px solid var(--blue); background: none; color: var(--blue); font: inherit; cursor: pointer; }
+#contact-captcha .captcha-confirm, #contact-captcha button:hover { background: var(--blue); color: #fff; }
+#contact-captcha button:disabled { opacity: .6; cursor: default; }
