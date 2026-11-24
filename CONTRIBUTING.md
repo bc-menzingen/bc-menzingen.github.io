@@ -1,7 +1,9 @@
 # Contributing
 
 Keep changes focused and explain the problem, resulting behavior, and validation in the
-pull request. AI coding agents also follow [AGENTS.md](AGENTS.md).
+pull request. Start with the [architecture documentation](docs/architecture/README.md) and
+[architectural decision records](docs/architecture/decisions/README.md). AI coding agents also
+follow [AGENTS.md](AGENTS.md).
 
 ## Contact details
 
@@ -30,29 +32,43 @@ docs: describe the deployment
 
 ## Setup and validation
 
-Install Node.js 24 or later, then run from the repository root:
+Install [mise](https://mise.jdx.dev), then run from the repository root:
 
 ```sh
-npm ci                  # dependencies exactly as in package-lock.json
+mise install            # Node.js as pinned in .mise/config.toml
+mise run install        # npm ci: dependencies exactly as in package-lock.json
 cp .env.example .env    # dummy contact details
-npm run dev             # http://localhost:4321 with live reload
+mise run dev            # http://localhost:4321 with live reload
 ```
 
-Keep dependency changes deliberate, update `package.json` and `package-lock.json` together,
-and explain such changes in the pull request.
+`mise tasks` lists every task; those for the site wrap an npm script in
+[package.json](package.json), so mise stays optional. Keep dependency and Node.js changes
+deliberate, update `package.json` and `package-lock.json` together, and explain such changes
+in the pull request. To use Claude Code, run `mise run agents:init-claude` once to link
+`CLAUDE.md` to `AGENTS.md`.
 
 Run for code and content changes:
 
 ```sh
-npm run check    # types
-npm run build    # the site, into dist/
-npm test         # links, URLs, and no contact details in the repository or dist/
+mise run check
 ```
 
-[.github/workflows/deploy.yml](.github/workflows/deploy.yml) runs these on every pull request
-and push to `main`. A push to `main` also publishes `dist/` to GitHub Pages. Pages must use
-"GitHub Actions" as its source in the repository settings. Pull requests from forks build
-without the secrets, and so without contact details.
+which runs:
+
+```sh
+prettier --check .
+astro check
+astro build
+npm test            # links, URLs, and no contact details in the repository or dist/
+```
+
+`mise run fmt` applies Prettier. Project Markdown in the repository root and `docs/` keeps its
+hand-wrapped style and is not formatted.
+
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml) runs `mise run check` on every
+pull request and push to `main`. A push to `main` also publishes `dist/` to GitHub Pages.
+Pages must use "GitHub Actions" as its source in the repository settings. Pull requests from
+forks build without the secrets, and so without contact details.
 
 For visual or content changes, also check the result in a browser, at desktop width and at a
 phone width of about 390 pixels: no horizontal scrolling, a working menu, and a visible focus
@@ -60,14 +76,23 @@ when navigating with Tab. With [playwright-cli](https://github.com/microsoft/pla
 and a build with the values of `.env.example`, most of this is automated:
 
 ```sh
-npm run preview
-playwright-cli -s=bcm open http://127.0.0.1:4321/
-playwright-cli -s=bcm run-code "$(cat tests/browser-check.js)"
-playwright-cli -s=bcm close
+mise run build
+mise run preview --host 127.0.0.1    # keep running
+mise run test-browser                # in a second terminal
 ```
 
-Record what was checked; if no browser is available, report that limitation.
+Pass `--config=/path/to/config.json` to `test-browser` if your environment requires a custom
+Chromium executable. Record what was checked; if no browser is available, report that
+limitation.
 
 For documentation-only changes, verify relative links and claims against source, then run
-`git diff --check` and `npm test`. Report checks actually run, failures, and skipped coverage
-in the pull request. Avoid unrelated formatting and changes to generated files.
+`git diff --check` and `mise run test`. Report checks actually run, failures, and skipped
+coverage in the pull request. Avoid unrelated formatting and changes to generated files.
+
+## Architecture decisions
+
+Use the [ADR workflow and index](docs/architecture/decisions/README.md) for lasting choices
+such as the framework, hosting and deployment, or the handling of contact details. Copy the
+[template](docs/architecture/decisions/_adr-template.md), explain the alternatives and
+consequences, and identify how reviewers can detect drift. Routine implementation details do
+not need an ADR.

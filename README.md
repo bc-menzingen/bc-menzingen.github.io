@@ -8,12 +8,12 @@ the [Wayback Machine](https://web.archive.org/web/20240618234847/https://www.bcm
 
 ## Run it locally
 
-With Node.js 24 or later:
+With [mise](https://mise.jdx.dev):
 
 ```sh
-npm ci
+mise install && mise run install
 cp .env.example .env
-npm run dev    # http://localhost:4321
+mise run dev    # http://localhost:4321
 ```
 
 ## Editing content
@@ -44,7 +44,7 @@ solves an [ALTCHA](https://altcha.org/) proof of work that yields the key. This 
 server, sets no cookies, and sends nothing to third parties. It stops simple scrapers, but
 not a bot that runs a real browser and completes the dialog.
 
-`npm test` fails if an email address or phone number is in the repository or, in plain
+`mise run test` fails if an email address or phone number is in the repository or, in plain
 text, in the build.
 
 ## Migration notes
@@ -65,3 +65,4 @@ text, in the build.
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to build, check, and submit changes.
 - [AGENTS.md](AGENTS.md): instructions for AI coding agents.
+- [Architecture](docs/architecture/README.md) and [decisions](docs/architecture/decisions/README.md).
