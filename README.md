@@ -1,9 +1,9 @@
 # bc-menzingen.github.io
 
 The website of the Badmintonclub Menzingen: a static [Astro](https://astro.build) site
-in German, published on GitHub Pages at <https://bc-menzingen.github.io/>.
+in German, published on GitHub Pages at <https://bcmenzingen.ch/>.
 
-It is a rebuild of the WordPress site bcmenzingen.ch from its last working captures in
+It is a rebuild of the former WordPress site from its last working captures in
 the [Wayback Machine](https://web.archive.org/web/20240618234847/https://www.bcmenzingen.ch/).
 
 ## Run it locally
@@ -50,7 +50,7 @@ text, in the build.
 ## Migration notes
 
 - The page texts are those of the newest working capture of each page (September 2023 to
-  June 2024). Later captures only show an error, and the domain no longer exists.
+  June 2024). Later captures only show an error.
 - Text, colors, logo, images, and layout are kept. WordPress, its theme, and plugins are gone.
 - The Kontakt form is gone, because it needs a server.
 - The invitation to the general meeting of 2019 (PDF) is not published, as it contains a

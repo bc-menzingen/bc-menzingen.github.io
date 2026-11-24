@@ -33,6 +33,7 @@ does not prove correctness.
 
 | Record | Status |
 | --- | --- |
-| [0001 — Build a static site with Astro on GitHub Pages](0001-build-a-static-site-with-astro.md) | accepted |
+| [0001 — Build a static site with Astro on GitHub Pages](0001-build-a-static-site-with-astro.md) | accepted; amended by 0004 |
 | [0002 — Rebuild the former site from the Wayback Machine](0002-rebuild-the-former-site-from-the-wayback-machine.md) | accepted |
 | [0003 — Show contact details only behind a captcha](0003-show-contact-details-behind-a-captcha.md) | accepted |
+| [0004 — Serve the site at bcmenzingen.ch](0004-serve-the-site-at-bcmenzingen-ch.md) | accepted; amends 0001 |

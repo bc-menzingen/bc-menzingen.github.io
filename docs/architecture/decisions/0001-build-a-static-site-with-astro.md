@@ -2,6 +2,7 @@
 tags: [adr]
 status: accepted
 date: 2026-11-24
+amended-by: [0004-serve-the-site-at-bcmenzingen-ch.md]
 sources:
   - package.json
   - astro.config.mjs
@@ -11,6 +12,9 @@ sources:
 ---
 
 # 0001 — Build a static site with Astro on GitHub Pages
+
+> Amended by [ADR 0004](0004-serve-the-site-at-bcmenzingen-ch.md): the domain is registered
+> again, and the site is served there instead of at the github.io address.
 
 ## Context
 

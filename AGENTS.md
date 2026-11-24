@@ -1,7 +1,7 @@
 # Working on bc-menzingen.github.io
 
-The website of the Badmintonclub Menzingen, at <https://bc-menzingen.github.io/>. It is a
-static rebuild of the former WordPress site bcmenzingen.ch, built with Astro 7 and plain
+The website of the Badmintonclub Menzingen, at <https://bcmenzingen.ch/>. It is a
+static rebuild of the former WordPress site, built with Astro 7 and plain
 CSS. Use the versions pinned in `package-lock.json`.
 
 ## Start here
