@@ -2,8 +2,9 @@
 
 A static website built with Astro 7 and plain CSS
 ([ADR 0001](decisions/0001-build-a-static-site-with-astro.md)) and published on GitHub
-Pages at <https://bc-menzingen.github.io/>. It rebuilds the former WordPress site
-bcmenzingen.ch ([ADR 0002](decisions/0002-rebuild-the-former-site-from-the-wayback-machine.md)).
+Pages at <https://bcmenzingen.ch/>
+([ADR 0004](decisions/0004-serve-the-site-at-bcmenzingen-ch.md)). It rebuilds the former
+WordPress site ([ADR 0002](decisions/0002-rebuild-the-former-site-from-the-wayback-machine.md)).
 All text is German, written with Swiss spelling ("ss", not "ß"). See
 [CONTRIBUTING.md](../../CONTRIBUTING.md) for checks.
 
@@ -64,11 +65,12 @@ and, in plain text, in the build. It checks neither image metadata nor Git histo
 | `/category/allgemein/`, `/author/kevin/`, `/anlaesse/`, `/events/` | redirects to `/news/` in `astro.config.mjs` |
 | `/robots.txt`, `/sitemap-index.xml` | `src/pages/robots.txt.ts`, `@astrojs/sitemap` |
 
-Internal links start at `/`: the site must be served from the root of its domain. For a
-custom domain, change `site` in `astro.config.mjs` and `origin` in `tests/site.test.mjs`.
+Internal links start at `/`: the site must be served from the root of its domain. If the
+domain changes, change `site` in `astro.config.mjs` and `origin` in `tests/site.test.mjs`.
 
 ## Build and deployment
 
 `.mise/config.toml` pins Node.js, and the tasks in `.mise/tasks/` wrap the npm scripts.
 [deploy.yml](../../.github/workflows/deploy.yml) runs `mise run check` on every pull request
-and push to `main`, and publishes `dist/` from `main`.
+and push to `main`, and publishes `dist/` from `main`. The domain is set in the Pages settings
+of the repository, and its DNS zone is at Infomaniak.

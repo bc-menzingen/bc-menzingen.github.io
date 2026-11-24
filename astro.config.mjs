@@ -2,8 +2,7 @@ import { defineConfig, envField } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  // bcmenzingen.ch is currently not registered; change this if a custom domain is set up.
-  site: "https://bc-menzingen.github.io",
+  site: "https://bcmenzingen.ch",
   output: "static",
   trailingSlash: "always",
   env: {

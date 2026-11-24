@@ -5,7 +5,7 @@ import { readFile, readdir, access } from "node:fs/promises";
 import path from "node:path";
 import { deobfuscate } from "altcha-lib/obfuscation";
 
-const origin = "https://bc-menzingen.github.io";
+const origin = "https://bcmenzingen.ch";
 const posts = [
   "jubilaeumsausflug",
   "gv-2019",
@@ -39,7 +39,7 @@ for (const route of routes) {
       ),
     );
     assert.match(html, /Dienstags: 20.15 – 22.00 Uhr/);
-    assert.doesNotMatch(html, /wp-content|wpcf7|bcmenzingen\.ch|<form/);
+    assert.doesNotMatch(html, /wp-content|wpcf7|www\.bcmenzingen\.ch|<form/);
     await assertLocalLinks(html);
   });
 }
